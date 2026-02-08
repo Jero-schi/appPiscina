@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión Piscinas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 28px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 12px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .tab:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        .tab.active {
+            background: white;
+            color: #667eea;
+        }
+        
+        .panel {
+            display: none;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 30px;
+        }
+        
+        .panel.active {
+            display: block;
+        }
+        
+        .panel h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 20px;
+            text-align: center;
+        }
+        
+        .form-group {
+            margin-bottom: 18px;
+        }
+        
+        label {
+            display: block;
+            color: #555;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        select, input, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+            background: white;
+            font-family: inherit;
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+        
+        select:focus, input:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 15px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            margin: 0;
+        }
+        
+        .checkbox-group label {
+            margin: 0;
+            font-weight: 500;
+            color: #666;
+        }
+        
+        .precio-custom {
+            display: none;
+            margin-top: 10px;
+        }
+        
+        .precio-custom.show {
+            display: block;
+        }
+        
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 10px;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .mensaje {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 600;
+            display: none;
+        }
+        
+        .mensaje.exito {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #c3e6cb;
+        }
+        
+        .mensaje.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #f5c6cb;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spinner 0.6s linear infinite;
+            margin-left: 10px;
+        }
+        
+        @keyframes spinner {
+            to { transform: rotate(360deg); }
+        }
+
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196F3;
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            color: #1565C0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏊‍♂️ Gestión Piscinas</h1>
+        
+        <div class="tabs">
+            <button class="tab active" onclick="cambiarTab('venta')">💰 Venta</button>
+            <button class="tab" onclick="cambiarTab('compra')">📦 Compra</button>
+            <button class="tab" onclick="cambiarTab('gasto')">💸 Gasto</button>
+        </div>
+
+        <!-- PANEL VENTA -->
+        <div id="panel-venta" class="panel active">
+            <h2>Registrar Venta</h2>
+            <div class="info-box">
+                ✓ El stock se restará automáticamente
+            </div>
+            
+            <form id="formVenta">
+                <div class="form-group">
+                    <label for="venta-producto">Producto</label>
+                    <select id="venta-producto" required>
+                        <option value="">Seleccionar producto...</option>
+                        <option value="Cloro granulado 1kg">Cloro granulado 1kg</option>
+                        <option value="Cloro en pastillas 1kg">Cloro en pastillas 1kg</option>
+                        <option value="Alguicida 1lt">Alguicida 1lt</option>
+                        <option value="Decantador 1lt">Decantador 1lt</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="venta-cantidad">Cantidad</label>
+                    <input type="number" id="venta-cantidad" min="0.1" step="0.1" required placeholder="Ej: 2">
+                </div>
+                
+                <div class="form-group">
+                    <label for="venta-cliente">Cliente (opcional)</label>
+                    <input type="text" id="venta-cliente" placeholder="Nombre del cliente">
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="venta-precio-custom" onchange="togglePrecioCustom()">
+                    <label for="venta-precio-custom">Precio especial (mayorista)</label>
+                </div>
+
+                <div class="precio-custom" id="precio-custom-group">
+                    <div class="form-group">
+                        <label for="venta-precio-unitario">Precio por unidad</label>
+                        <input type="number" id="venta-precio-unitario" min="0" step="100" placeholder="Ej: 8000">
+                    </div>
+                </div>
+                
+                <button type="submit" id="btnVenta">Registrar Venta</button>
+                <div id="mensajeVenta" class="mensaje"></div>
+            </form>
+        </div>
+
+        <!-- PANEL COMPRA -->
+        <div id="panel-compra" class="panel">
+            <h2>Registrar Compra de Stock</h2>
+            <div class="info-box">
+                ✓ El stock se sumará automáticamente
+            </div>
+            
+            <form id="formCompra">
+                <div class="form-group">
+                    <label for="compra-producto">Producto</label>
+                    <select id="compra-producto" required>
+                        <option value="">Seleccionar producto...</option>
+                        <option value="Cloro granulado 1kg">Cloro granulado 1kg</option>
+                        <option value="Cloro en pastillas 1kg">Cloro en pastillas 1kg</option>
+                        <option value="Alguicida 1lt">Alguicida 1lt</option>
+                        <option value="Decantador 1lt">Decantador 1lt</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="compra-cantidad">Cantidad</label>
+                    <input type="number" id="compra-cantidad" min="0.1" step="0.1" required placeholder="Ej: 50">
+                </div>
+
+                <div class="form-group">
+                    <label for="compra-precio">Precio total pagado (opcional)</label>
+                    <input type="number" id="compra-precio" min="0" step="100" placeholder="Ej: 250000">
+                </div>
+                
+                <div class="form-group">
+                    <label for="compra-notas">Notas (opcional)</label>
+                    <textarea id="compra-notas" placeholder="Proveedor, detalles, etc."></textarea>
+                </div>
+                
+                <button type="submit" id="btnCompra">Registrar Compra</button>
+                <div id="mensajeCompra" class="mensaje"></div>
+            </form>
+        </div>
+
+        <!-- PANEL GASTO -->
+        <div id="panel-gasto" class="panel">
+            <h2>Registrar Gasto</h2>
+            <div class="info-box">
+                📊 Estos gastos se reflejan en el Dashboard
+            </div>
+            
+            <form id="formGasto">
+                <div class="form-group">
+                    <label for="gasto-concepto">Concepto</label>
+                    <input type="text" id="gasto-concepto" required placeholder="Ej: Nafta, Luz, Alquiler">
+                </div>
+                
+                <div class="form-group">
+                    <label for="gasto-monto">Monto</label>
+                    <input type="number" id="gasto-monto" min="0" step="100" required placeholder="Ej: 15000">
+                </div>
+                
+                <div class="form-group">
+                    <label for="gasto-notas">Notas (opcional)</label>
+                    <textarea id="gasto-notas" placeholder="Detalles adicionales"></textarea>
+                </div>
+                
+                <button type="submit" id="btnGasto">Registrar Gasto</button>
+                <div id="mensajeGasto" class="mensaje"></div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxRzXPtMRRRToLIWtzSYeK66R-Bz61z0EvzcWl0JLPEJcZkmGjOiM4ELyxw51YTFgpc/exec';
+        
+        function cambiarTab(tab) {
+            // Cambiar tabs
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById('panel-' + tab).classList.add('active');
+        }
+
+        function togglePrecioCustom() {
+            const checkbox = document.getElementById('venta-precio-custom');
+            const grupo = document.getElementById('precio-custom-group');
+            
+            if (checkbox.checked) {
+                grupo.classList.add('show');
+                document.getElementById('venta-precio-unitario').required = true;
+            } else {
+                grupo.classList.remove('show');
+                document.getElementById('venta-precio-unitario').required = false;
+                document.getElementById('venta-precio-unitario').value = '';
+            }
+        }
+
+        // FORM VENTA
+        document.getElementById('formVenta').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            await enviarDatos('venta', {
+                accion: 'venta',
+                producto: document.getElementById('venta-producto').value,
+                cantidad: document.getElementById('venta-cantidad').value,
+                cliente: document.getElementById('venta-cliente').value,
+                precioPersonalizado: document.getElementById('venta-precio-unitario').value || 0
+            }, 'btnVenta', 'mensajeVenta', 'formVenta');
+        });
+
+        // FORM COMPRA
+        document.getElementById('formCompra').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            await enviarDatos('compra', {
+                accion: 'compra',
+                producto: document.getElementById('compra-producto').value,
+                cantidad: document.getElementById('compra-cantidad').value,
+                precioTotal: document.getElementById('compra-precio').value,
+                notas: document.getElementById('compra-notas').value
+            }, 'btnCompra', 'mensajeCompra', 'formCompra');
+        });
+
+        // FORM GASTO
+        document.getElementById('formGasto').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            await enviarDatos('gasto', {
+                accion: 'gasto',
+                concepto: document.getElementById('gasto-concepto').value,
+                monto: document.getElementById('gasto-monto').value,
+                notas: document.getElementById('gasto-notas').value
+            }, 'btnGasto', 'mensajeGasto', 'formGasto');
+        });
+
+        async function enviarDatos(tipo, datos, btnId, mensajeId, formId) {
+            const btn = document.getElementById(btnId);
+            const mensaje = document.getElementById(mensajeId);
+            const textoOriginal = btn.innerHTML;
+            
+            btn.disabled = true;
+            btn.innerHTML = 'Enviando... <span class="loading"></span>';
+            mensaje.style.display = 'none';
+            
+            try {
+                await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(datos)
+                });
+                
+                mensaje.className = 'mensaje exito';
+                const mensajes = {
+                    venta: '✓ Venta registrada y stock actualizado',
+                    compra: '✓ Compra registrada y stock actualizado',
+                    gasto: '✓ Gasto registrado correctamente'
+                };
+                mensaje.textContent = mensajes[tipo];
+                mensaje.style.display = 'block';
+                
+                document.getElementById(formId).reset();
+                
+                // Ocultar precio custom si estaba visible
+                if (tipo === 'venta') {
+                    document.getElementById('precio-custom-group').classList.remove('show');
+                }
+                
+                setTimeout(() => { mensaje.style.display = 'none'; }, 3000);
+                
+            } catch (error) {
+                mensaje.className = 'mensaje error';
+                mensaje.textContent = '✗ Error al registrar. Intentá de nuevo.';
+                mensaje.style.display = 'block';
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = textoOriginal;
+            }
+        }
+    </script>
+</body>
+</html>

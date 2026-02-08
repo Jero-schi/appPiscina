@@ -1,0 +1,158 @@
+# 🏊 SISTEMA COMPLETO DE GESTIÓN - NEGOCIO DE PISCINAS
+
+## 📋 RESUMEN DEL SISTEMA
+
+Este sistema te permite:
+- ✅ Registrar ventas (con descuento stock automático)
+- ✅ Agregar compras de mercadería (suma stock automático)
+- ✅ Anotar gastos variables
+- ✅ Ver dashboard con ventas, ganancias y stock en tiempo real
+- ✅ Todo desde tu celular o computadora
+
+---
+
+## 🚀 PASO 1: PREPARAR GOOGLE SHEET
+
+### 1.1 Importar la plantilla
+1. Descargá el archivo **plantilla_piscinas.xlsx**
+2. Abrí Google Drive (drive.google.com)
+3. Subí el archivo y abrilo con Google Sheets
+4. Vas a ver 5 hojas:
+   - **Dashboard** (resumen visual)
+   - **Productos** (precios y stock)
+   - **Registro_Ventas** (historial de ventas)
+   - **Compras_Stock** (cuando comprás mercadería)
+   - **Gastos** (gastos variables del negocio)
+
+### 1.2 Verificar que todo esté bien
+- En la hoja "Productos" deberías ver tus 4 productos con precios y stock inicial
+- En "Dashboard" vas a ver todo en $0 porque todavía no hay movimientos
+- Las otras hojas tienen solo los encabezados
+
+---
+
+## ⚙️ PASO 2: CONFIGURAR GOOGLE APPS SCRIPT
+
+### 2.1 Abrir el editor
+1. En tu Google Sheet, andá a **Extensiones** → **Apps Script**
+2. Borrá todo el código que aparece por defecto
+
+### 2.2 Pegar el nuevo código
+1. Abrí el archivo **google_apps_script.js** que te pasé
+2. Copiá TODO el contenido
+3. Pegalo en el editor de Apps Script
+4. Dale **Guardar** (ícono de diskette o Ctrl+S)
+
+### 2.3 Implementar como aplicación web
+1. Hacé click en **Implementar** (arriba a la derecha) → **Nueva implementación**
+2. Tipo: seleccioná **Aplicación web**
+3. Descripción: ponele "API Piscinas" o lo que quieras
+4. Ejecutar como: **Yo** (tu cuenta)
+5. Quién tiene acceso: **Cualquier usuario**
+6. Dale **Implementar**
+7. Te va a pedir permisos:
+   - Dale **"Revisar permisos"**
+   - Elegí tu cuenta
+   - Te sale "Google no verificó esta app" → Dale **"Configuración avanzada"**
+   - Abajo dice "Ir a [nombre] (no seguro)" → Dale click
+   - **Permitir**
+8. Copiá la **URL** que te da (termina en `/exec`)
+
+### 2.4 Actualizar la URL en la app web
+1. Abrí el archivo **gestion_piscinas_completa.html**
+2. Buscá la línea que dice:
+   ```javascript
+   const SCRIPT_URL = 'https://script.google.com/...';
+   ```
+3. Reemplazá esa URL por la que copiaste en el paso anterior
+4. Guardá el archivo
+
+---
+
+## 📱 PASO 3: USAR LA APLICACIÓN
+
+### 3.1 Abrir la app
+1. Abrí el archivo **gestion_piscinas_completa.html** en tu navegador
+2. Desde el celular: guardalo en favoritos o agregalo a pantalla de inicio
+
+### 3.2 Funciones disponibles
+
+#### 💰 REGISTRAR VENTA
+- Seleccionás el producto
+- Ponés cantidad vendida
+- Opcionalmente el nombre del cliente
+- Si es venta mayorista, activás "Precio especial" y ponés el precio
+- Dale "Registrar Venta"
+- **Automáticamente**: resta del stock y registra ganancia
+
+#### 📦 COMPRAR STOCK
+- Seleccionás el producto
+- Ponés cuánto compraste
+- Opcionalmente el precio total que pagaste
+- Dale "Registrar Compra"
+- **Automáticamente**: suma al stock
+
+#### 💸 REGISTRAR GASTO
+- Ponés el concepto (nafta, luz, etc.)
+- Ponés el monto
+- Opcionalmente alguna nota
+- Dale "Registrar Gasto"
+- **Se refleja en el Dashboard**
+
+---
+
+## 📊 PASO 4: VER EL DASHBOARD
+
+Abrí tu Google Sheet y andá a la hoja "Dashboard". Ahí vas a ver:
+
+### 📊 Resumen de HOY
+- Ventas del día
+- Ganancias del día
+- Gastos del día
+
+### 📅 Resumen del MES
+- Ventas totales del mes
+- Ganancias del mes
+- Gastos del mes
+- **Ganancia neta** (ganancias - gastos)
+
+### 📦 Stock actual
+- Cuánto tenés de cada producto en tiempo real
+
+---
+
+## 🎯 CONSEJOS DE USO
+
+1. **Desde el celular**: Guardá la app web en favoritos para acceso rápido
+2. **Stock bajo**: Si ves que un producto tiene poco stock en el Dashboard, andá a la app y registrá una compra
+3. **Ventas mayoristas**: Usá el "Precio especial" para ventas con descuento
+4. **Gastos**: Anotá todos los gastos para ver la ganancia real en el Dashboard
+5. **Backup**: Google Sheets se guarda automáticamente, pero podés descargar una copia de vez en cuando
+
+---
+
+## 🔧 SOLUCIÓN DE PROBLEMAS
+
+### La app no registra nada
+- Verificá que hayas actualizado la URL del script en el HTML
+- Verificá que hayas dado los permisos en Google Apps Script
+
+### El stock no se actualiza
+- Asegurate de que los nombres de productos en la app coincidan EXACTAMENTE con la hoja "Productos"
+- Verificá que la hoja se llame "Productos" (sin espacios ni tildes)
+
+### Error al cargar el Dashboard
+- Esperá unos segundos, las fórmulas tardan en calcularse
+- Si sigue sin funcionar, abrí cada hoja una vez para que Google Sheets las cargue
+
+---
+
+## 📝 NOTAS FINALES
+
+- Todo se guarda automáticamente en Google Sheets
+- Podés acceder desde cualquier dispositivo
+- El Dashboard se actualiza en tiempo real
+- Si querés agregar más productos, avisame y te ayudo
+- Si necesitás más reportes o funciones, también puedo agregarlo
+
+¡Listo! Ya tenés tu sistema completo funcionando 🎉
